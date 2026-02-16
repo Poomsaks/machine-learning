@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  ml-api:
+    build: .
+    container_name: onserver-ml-api
+    ports:
+      - "6000:6000"
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: always
