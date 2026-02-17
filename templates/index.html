@@ -2,75 +2,273 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Titanic Survival Predictor</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #f8f9fa; }
-        .card { margin-top: 50px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        * {
+            font-family: 'Sarabun', sans-serif;
+        }
+        
+        body { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+        
+        .main-card {
+            margin-top: 30px;
+            border-radius: 20px;
+            border: none;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            animation: fadeIn 0.6s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            padding: 30px;
+            border: none;
+        }
+        
+        .card-header h3 {
+            font-weight: 700;
+            font-size: 2rem;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .ship-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+        
+        .card-body {
+            padding: 40px;
+            background: #ffffff;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+        
+        .form-control, .form-select {
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 12px 15px;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
+        }
+        
+        .input-group-icon {
+            position: relative;
+        }
+        
+        .input-group-icon i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #a0aec0;
+        }
+        
+        .btn-predict {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 12px;
+            padding: 15px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-predict:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+        
+        .result-box {
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            animation: slideIn 0.5s ease-out;
+            border: none;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        .result-box h4 {
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .result-box p {
+            font-size: 1.1rem;
+            margin: 0;
+        }
+        
+        .alert-success {
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+            color: #1a4d2e;
+        }
+        
+        .alert-danger {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            color: #741b47;
+        }
+        
+        .info-badge {
+            background: #edf2f7;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: #4a5568;
+            display: inline-block;
+            margin-top: 5px;
+        }
+        
+        .section-divider {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
+            margin: 25px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .card-body {
+                padding: 25px;
+            }
+            
+            .card-header h3 {
+                font-size: 1.5rem;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header bg-primary text-white text-center">
+            <div class="col-lg-7 col-md-9">
+                <div class="card main-card">
+                    <div class="card-header text-white text-center">
+                        <div class="ship-icon">🚢</div>
                         <h3>ทายโอกาสรอดชีวิต Titanic</h3>
+                        <p class="mb-0" style="opacity: 0.9;">ใช้ AI ทำนายโอกาสรอดชีวิตจากเหตุการณ์จริง</p>
                     </div>
                     <div class="card-body">
                         <form action="/predict" method="post">
-                            <div class="mb-3">
-                                <label class="form-label">เพศ (male/female):</label>
-                                <select name="sex" class="form-select">
-                                    <option value="female">Female</option>
-                                    <option value="male">Male</option>
-                                </select>
-                            </div>
+                            <!-- Personal Info Section -->
+                            <h5 style="color: #2d3748; font-weight: 600; margin-bottom: 20px;">
+                                👤 ข้อมูลส่วนตัว
+                            </h5>
+                            
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label">ชั้นที่นั่ง (1-3):</label>
-                                    <input type="number" name="pclass" class="form-control" min="1" max="3" value="3" required>
+                                    <label class="form-label">เพศ</label>
+                                    <select name="sex" class="form-select">
+                                        <option value="female">👩 Female (หญิง)</option>
+                                        <option value="male">👨 Male (ชาย)</option>
+                                    </select>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label">อายุ:</label>
+                                    <label class="form-label">อายุ (ปี)</label>
                                     <input type="number" name="age" class="form-control" value="25" required>
+                                    <div class="info-badge">ช่วง: 0-80 ปี</div>
                                 </div>
                             </div>
+
+                            <div class="section-divider"></div>
+
+                            <!-- Ticket Info Section -->
+                            <h5 style="color: #2d3748; font-weight: 600; margin-bottom: 20px;">
+                                🎫 ข้อมูลตั๋ว
+                            </h5>
+                            
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label">พี่น้อง/คู่สมรส:</label>
-                                    <input type="number" name="sibsp" class="form-control" value="0">
+                                    <label class="form-label">ชั้นที่นั่ง</label>
+                                    <select name="pclass" class="form-select">
+                                        <option value="1">🥇 First Class (ชั้น 1)</option>
+                                        <option value="2">🥈 Second Class (ชั้น 2)</option>
+                                        <option value="3" selected>🥉 Third Class (ชั้น 3)</option>
+                                    </select>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label">พ่อแม่/ลูก:</label>
-                                    <input type="number" name="parch" class="form-control" value="0">
+                                    <label class="form-label">ราคาตั๋ว (£)</label>
+                                    <input type="number" step="0.01" name="fare" class="form-control" value="7.25" required>
+                                    <div class="info-badge">ราคาเป็นปอนด์อังกฤษ</div>
                                 </div>
                             </div>
+
                             <div class="mb-3">
-                                <label class="form-label">ราคาตั๋ว:</label>
-                                <input type="number" step="0.01" name="fare" class="form-control" value="7.25">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">ท่าเรือที่ขึ้น (C, Q, S):</label>
+                                <label class="form-label">ท่าเรือที่ขึ้นเรือ</label>
                                 <select name="embarked" class="form-select">
-                                    <option value="S">Southampton (S)</option>
-                                    <option value="C">Cherbourg (C)</option>
-                                    <option value="Q">Queenstown (Q)</option>
+                                    <option value="S" selected>⚓ Southampton (S)</option>
+                                    <option value="C">⚓ Cherbourg (C)</option>
+                                    <option value="Q">⚓ Queenstown (Q)</option>
                                 </select>
                             </div>
-                            <button type="submit" class="btn btn-primary w-100">ทำนายผลเลย!</button>
+
+                            <div class="section-divider"></div>
+
+                            <!-- Family Info Section -->
+                            <h5 style="color: #2d3748; font-weight: 600; margin-bottom: 20px;">
+                                👨‍👩‍👧‍👦 ข้อมูลครอบครัว
+                            </h5>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">พี่น้อง/คู่สมรส</label>
+                                    <input type="number" name="sibsp" class="form-control" value="0" min="0" required>
+                                    <div class="info-badge">จำนวนคนที่อยู่ด้วย</div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">พ่อแม่/ลูก</label>
+                                    <input type="number" name="parch" class="form-control" value="0" min="0" required>
+                                    <div class="info-badge">จำนวนคนที่อยู่ด้วย</div>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-predict btn-primary w-100 mt-4">
+                                🔮 ทำนายผลเลย!
+                            </button>
                         </form>
 
                         {% if result %}
-                        <div class="alert alert-{{ p_class }} mt-4 text-center">
-                            <h4>ผลลัพธ์: {{ result }}</h4>
-                            <p>ความมั่นใจของ AI: {{ conf }}%</p>
+                        <div class="alert alert-{{ p_class }} mt-4 result-box">
+                            <h4>{{ result }}</h4>
+                            <p><strong>ความมั่นใจของ AI:</strong> {{ conf }}%</p>
                         </div>
                         {% endif %}
                     </div>
                 </div>
+                
+                <div class="text-center mt-4" style="color: white; opacity: 0.8;">
+                    <small>💡 ข้อมูลจากเหตุการณ์จริงปี 1912</small>
+                </div>
             </div>
         </div>
     </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
